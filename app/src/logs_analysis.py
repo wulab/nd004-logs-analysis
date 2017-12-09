@@ -6,6 +6,7 @@
 from datetime import datetime
 import psycopg2
 import sys
+import time
 
 
 def connect():
@@ -14,6 +15,21 @@ def connect():
                             dbname="news",
                             user="vagrant",
                             password="mysecretpassword")
+
+
+def check_database_connection():
+    for i in range(3):
+        try:
+            connect()
+            break
+        except psycopg2.OperationalError:
+            if i < 2:
+                time.sleep(10)
+                continue
+            else:
+                sys.exit("""
+ ! Failed to connect to the "news" database on host "db"
+                    """)
 
 
 def fetchall(query):
@@ -109,13 +125,7 @@ Answer:
 
 
 if __name__ == '__main__':
-    try:
-        connect()
-    except psycopg2.OperationalError:
-        sys.exit("""
- ! Failed to connect to "news" database on host "db"
-            """)
-
+    check_database_connection()
     print_most_popular_articles()
     print_most_popular_authors()
     print_error_reporting()
