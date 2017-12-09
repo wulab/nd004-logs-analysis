@@ -4,6 +4,7 @@
 #
 
 import psycopg2
+from datetime import datetime
 
 
 def connect():
@@ -100,7 +101,8 @@ Answer:
         """)
 
     for row in fetchall(query):
-        print( '  {0} — {1:.2%} errors'.format(*row) )
+        date = datetime.strptime(str(row[0]), '%Y-%m-%d')
+        print( '  {0:%B %d, %Y} — {1:.2%} errors'.format(date, row[1]) )
 
     print()
 
