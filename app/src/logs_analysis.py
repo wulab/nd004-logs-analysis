@@ -3,8 +3,9 @@
 # logs_analysis.py -- create a reporting tool that prints out reports
 #
 
-import psycopg2
 from datetime import datetime
+import psycopg2
+import sys
 
 
 def connect():
@@ -108,6 +109,13 @@ Answer:
 
 
 if __name__ == '__main__':
+    try:
+        connect()
+    except psycopg2.OperationalError:
+        sys.exit("""
+ ! Failed to connect to "news" database on host "db"
+            """)
+
     print_most_popular_articles()
     print_most_popular_authors()
     print_error_reporting()
