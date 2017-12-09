@@ -3,8 +3,6 @@ version: "3"
 services:
   app:
     build: ./app
-    volumes:
-      - ./app/src:/usr/src/app
     depends_on:
       - db
 
@@ -16,5 +14,3 @@ services:
       - POSTGRES_USER=vagrant
     volumes:
       - ./db/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
-    ports:
-      - "5432:5432"
