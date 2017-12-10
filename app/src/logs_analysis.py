@@ -9,27 +9,19 @@ import sys
 import time
 
 
-def connect():
+def connect(attempt=0):
     """Connects to the PostgreSQL database. Returns a database connection."""
-    return psycopg2.connect(host="db",
-                            dbname="news",
-                            user="vagrant",
-                            password="mysecretpassword")
-
-
-def check_database_connection():
-    for i in range(3):
+    if attempt > 2:
+        sys.exit('  ! Failed to connect to "news" database on host "db"\n')
+    else:
         try:
-            connect()
-            break
+            return psycopg2.connect(host="db",
+                                    dbname="news",
+                                    user="vagrant",
+                                    password="mysecretpassword")
         except psycopg2.OperationalError:
-            if i < 2:
-                time.sleep(10)
-                continue
-            else:
-                sys.exit("""
- ! Failed to connect to the "news" database on host "db"
-                    """)
+            time.sleep(5)
+            return connect(attempt + 1)
 
 
 def fetchall(query):
@@ -125,7 +117,6 @@ Answer:
 
 
 if __name__ == '__main__':
-    check_database_connection()
     print_most_popular_articles()
     print_most_popular_authors()
     print_error_reporting()
